@@ -13,9 +13,6 @@ import butterknife.ButterKnife;
 
 import static com.example.suno.kakao.R.id.imageView;
 
-/**
- * Created by suno on 2017. 9. 16..
- */
 
 public class ImageViewHolder extends RecyclerView.ViewHolder {
     @BindView(imageView)
@@ -33,7 +30,6 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindView(HashMap<String, String> map) {
-        Log.d("bindView", map.get("title"));
         imageLoader.loadBitmap(map.get("url"), imgv);
         tvTitle.setText(map.get("title"));
     }

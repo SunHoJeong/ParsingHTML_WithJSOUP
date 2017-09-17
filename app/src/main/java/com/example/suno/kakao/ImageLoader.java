@@ -1,5 +1,6 @@
 package com.example.suno.kakao;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -13,34 +14,26 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static android.R.attr.bitmap;
-
-/**
- * Created by suno on 2017. 9. 17..
- */
-
 public class ImageLoader {
     private String baseUrl = "http://www.gettyimagesgallery.com/";
 
+    private Context context;
     private Retrofit retrofit;
     private HttpService service;
-    private RecyclerViewAdapter adapter;
 
     private int maxMemory;
     private int cacheSize;
     private LruCache<String, Bitmap> memoryCache;
 
-    public ImageLoader(RecyclerViewAdapter adapter) {
-        this.adapter = adapter;
+    public ImageLoader(Context context) {
+        this.context = context;
 
         maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         cacheSize = maxMemory / 8;
 
-        memoryCache =  new LruCache<String, Bitmap>(cacheSize) {
+        memoryCache = new LruCache<String, Bitmap>(cacheSize) {
             @Override
             protected int sizeOf(String key, Bitmap bitmap) {
-                // The cache size will be measured in kilobytes rather than
-                // number of items.
                 return bitmap.getByteCount() / 1024;
             }
         };
@@ -56,13 +49,11 @@ public class ImageLoader {
         final String imageKey = url;
 
         final Bitmap bitm = getBitmapFromMemCache(imageKey);
-        if(bitm != null) {
+
+        if (bitm != null) {
             //adapter.addBitmap(bitm);
-            Log.d("memoryCache_bitmap", bitm.toString());
-            Log.d("maxMemory", maxMemory+"");
             imgv.setImageBitmap(bitm);
-        }
-        else {
+        } else {
             imgv.setImageResource(R.drawable.img_loading);
 
             Call<ResponseBody> call = service.getBitmapFromUrl(url);
@@ -84,8 +75,6 @@ public class ImageLoader {
                             Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
 
                             addBitmapToMemoryCache(imageKey, bitmap);
-                            //adapter.addBitmap(bitmap);
-                            Log.d("onResponse_downloading", bitmap.toString());
                             imgv.setImageBitmap(bitmap);
 
                         } else {
