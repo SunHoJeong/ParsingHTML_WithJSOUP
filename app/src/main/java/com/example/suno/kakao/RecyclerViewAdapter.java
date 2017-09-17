@@ -45,8 +45,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return imageList != null ? imageList.size() : 0;
     }
 
-    public void addBitmap(Bitmap bitmap) {
-        bitmapList.add(bitmap);
-        this.notifyItemInserted(bitmapList.size() - 1);
-    }
+//    public void addBitmap(Bitmap bitmap) {
+//        bitmapList.add(bitmap);
+//        this.notifyItemInserted(bitmapList.size() - 1);
+//    }
 }

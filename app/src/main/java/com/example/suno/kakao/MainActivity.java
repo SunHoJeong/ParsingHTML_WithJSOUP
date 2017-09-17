@@ -1,6 +1,5 @@
 package com.example.suno.kakao;
 
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +19,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.recyclerView)
@@ -112,35 +110,37 @@ public class MainActivity extends AppCompatActivity {
                         .timeout(5000)
                         .get();
 
+                for (Element element : rawData.select("div.gallery-item-group")) {
+                    HashMap<String, String> map = new HashMap<>();
+
+                    Elements imgElements = element.select("img.picture");
+                    Elements titleElements = element.select("div.gallery-item-caption p");
+
+                    map.put("title", titleElements.first().text());
+                    map.put("url", imgElements.first().attr("src"));
+
+                    imgUrlList.add(map);
+                }
+
+//                for (HashMap<String, String> map : imgUrlList) {
+//                    Log.d("TITLE, URL", map.get("title") +", "+ map.get("url"));
+//                }
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-
-            for (Element element : rawData.select("div.gallery-item-group.exitemrepeater")) {
-                HashMap<String, String> map = new HashMap<>();
-
-                Elements imgElements = element.select("img.picture");
-                Elements titleElements = element.select("div.gallery-item-caption p");
-
-                map.put("title", titleElements.first().text());
-                map.put("url", imgElements.first().attr("src"));
-
-                imgUrlList.add(map);
-            }
-
-            for (HashMap<String, String> map : imgUrlList) {
-                Log.d("TITLE", map.get("title"));
-                Log.d("URL", map.get("url"));
             }
 
             return imgUrlList;
         }
 
         @Override
-        protected void onPostExecute(List<HashMap<String, String>> strings) {
-            super.onPostExecute(strings);
+        protected void onPostExecute(List<HashMap<String, String>> list) {
+            super.onPostExecute(list);
 
-            imageList = strings;
+            imageList = list;
+
+            for (HashMap<String, String> map : imageList) {
+                Log.d("TITLE, URL", map.get("title") +", "+ map.get("url"));
+            }
 
             initRecyclerView();
 

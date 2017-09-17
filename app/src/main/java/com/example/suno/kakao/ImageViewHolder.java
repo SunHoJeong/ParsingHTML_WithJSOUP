@@ -1,6 +1,7 @@
 package com.example.suno.kakao;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +33,8 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindView(HashMap<String, String> map) {
-        imageLoader.getBitmap(map.get("url"), imgv);
+        Log.d("bindView", map.get("title"));
+        imageLoader.loadBitmap(map.get("url"), imgv);
         tvTitle.setText(map.get("title"));
     }
 }
